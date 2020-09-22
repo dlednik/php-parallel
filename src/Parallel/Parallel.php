@@ -14,7 +14,7 @@ use Parallel\Storage\StorageInterface;
 
 class Parallel {
 
-    const VERSION = '1.2.0';
+    const VERSION = '1.2.1';
 
     /**
      * @var StorageInterface
@@ -85,6 +85,34 @@ class Parallel {
         $result = $this->Storage->get($this->key, $namesArr);
         $this->Storage->del($this->key, $namesArr);
         return is_string($names) ? $result[$names] : $result;
+    }
+
+    /**
+     * Wait only for first process
+     * @return array
+     */
+    public function waitFirst() {
+        $namesArr = array_keys($this->pids);
+        if (sizeof($namesArr)>0) {
+            return $this->wait([$namesArr[0]]);
+        }
+        return null;
+    }
+
+    /**
+     * Return list of process names
+     * @return array
+     */
+    public function list() {
+        return array_keys($this->pids);
+    }
+
+    /**
+     * Return number of processes in the list
+     * @return int
+     */
+    public function count() {
+        return sizeof(array_keys($this->pids));
     }
 
     /**
